@@ -5,7 +5,7 @@ OUTPY es un script que ayuda a la venta progresiva de criptoactivos. Conectado a
 
 ## Introducción
 
-El script OUTPY (dcaout.py), diseñado para el apoyo en la venta progresiva de criptoactivos mediante dollar cost average, simplifica y automatiza el proceso de venta basado en la fluctuación del precio. Utiliza datos de precios en tiempo real obtenidos de CoinMarketCap para determinar cuándo vender activos, basándose en un umbral predefinido. He creado una versión MVP, pensada para ejecutarse manualmente cada que uno desea hacer una venta. En versiones posteriores, podría implementarse funcionalidades de automatización como recordatorios, y alertas detonadas por movimientos en el precio de los activos. También, por qué no?, integración con exchanges para hacer la venta directamente en nuestra wallet.
+El script OUTPY (dcaout.py), diseñado para el apoyo en la venta progresiva de criptoactivos mediante dollar cost average, simplifica y automatiza el proceso de venta basado en la fluctuación del precio. Utiliza datos de precios en tiempo real obtenidos de CoinMarketCap para determinar cuánto porcentaje de un activo vender, basándose en un umbral predefinido. He creado una versión MVP, pensada para ejecutarse manualmente cada que uno desea hacer una venta. En versiones posteriores, podría implementarse funcionalidades de automatización como recordatorios, y alertas detonadas por movimientos en el precio de los activos. También, por qué no?, integración con exchanges para hacer la venta directamente en nuestra wallet.
 Este documento proporciona un análisis detallado de las funcionalidades hasta el momento, el valor y el uso del script.
 
 ## Funcionalidades
@@ -22,14 +22,16 @@ Este documento proporciona un análisis detallado de las funcionalidades hasta e
 
 ### 3. **Operaciones en la Interfaz de Usuario**
 
-- **`print_header()`**: Muestra un resumen de los activos, su cantidad, precio actual y valor total.
+- **`print_header()`**: Muestra un resumen de los activos, su cantidad, precio actual y valor fiat total.
 - **`show_salelog()`**: Muestra el historial de ventas almacenado en `salelog.txt`.
 
 ### 4. **Validación y Registro de Ventas**
 
 - **`validate_asset(key)`**: Verifica si un activo existe en la lista de activos cargada.
 - **`set_salelog(asset, percent, price, quantity_sold)`**: Registra la transacción de venta en `salelog.txt` con detalles de la venta como el porcentaje vendido, el precio y la cantidad.
-- **`sell_asset(asset)`**: Calcula la cantidad a vender basada en el precio del activo y el umbral de venta definido. Actualiza la cantidad del activo y escribe en el registro de ventas.
+- **`sell_asset(asset)`**: Calcula la cantidad a vender basada en el precio del activo y el umbral de venta definido. Actualiza la cantidad del activo y escribe en el registro de ventas. Estoy trabajando en una forma de definir para cada objeto de asset en el JSON, la formula deseada para calcular el porcentaje de tal activo, e implementar un método abstracto para cada asset.
+
+
 
 ### 5. **Interfaz de Usuario**
 
@@ -46,9 +48,20 @@ Este documento proporciona un análisis detallado de las funcionalidades hasta e
         "ETH": {"symbol": "ETH", "quantity": 5.0, "price": 0}
     }
     ```
-    Al correr el script con simbolos válidos, el precio se actualiza imediatamente en el fichero json. La cantidad en posesión debe ingresarse manualmente para cada activo, pensando a futuro integrar apis de exchanges o wallets para manejar las tenencias de criptoactivos con mayor precisíón.
+    Al correr el script con simbolos válidos, el precio se actualiza imediatamente en el fichero json. La cantidad en posesión se debe ingresar manualmente para cada activo, pensando a futuro integrar apis de exchanges o wallets para manejar las tenencias de criptoactivos con mayor precisíón.
    
 3. **API de CoinMarketCap**: Se necesita una clave API válida. Sustituir `"YOUR FREE COINMARKETCAP API KEY"` con tu clave en el script.
+
+4. **Escribir tu propia función para obtener porcentaje deseado**: Estoy trabajando en una forma de definir para cada objeto de asset en el JSON, la formula deseada para calcular el porcentaje de tal activo, e implementar un método abstracto para cada asset; Mientras tanto, es necesario modificar la función `sell_asset()` la línea de la variable `percent` para reflejar la cantidad deseada de venta en función del precio.
+  ```python
+    # sell_asset
+    def sell_asset(asset):
+      price = assets[asset]["price"]
+      quantity = assets[asset]["quantity"]
+
+      percent = (price - 2) * 5
+    ``` 
+5. **Import requests**: es probable que se requiera el módulo requests `pip install requests`
 
 ### Ejecución del Script
 
@@ -90,4 +103,4 @@ Este documento proporciona un análisis detallado de las funcionalidades hasta e
 - **API CoinMarketCap**: Documentación de la API y cómo obtener una clave [aquí](https://coinmarketcap.com/api/).
 - **Formato del Archivo JSON**: Asegúrate de que el archivo `assets.json` esté correctamente formateado y actualizado para evitar errores en la ejecución.
 
-Este script proporciona una solución eficiente y automatizada para la venta de criptoactivos, facilitando la gestión y optimización de portafolios de inversión en criptomonedas, creado para mi uso personal con animos de compartirlo para aquellos que gusten aportar mejoras o utilizarlo a su conveniencia.
+Este script proporciona una solución eficiente y automatizada para la venta de criptoactivos utilizando una estrategia DCA de salida en portafolios de inversión en criptomonedas, creado para mi uso personal con animos de compartirlo para aquellos que gusten aportar mejoras o utilizarlo a su conveniencia.
