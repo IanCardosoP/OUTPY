@@ -60,7 +60,8 @@ Este documento proporciona un análisis detallado de las funcionalidades hasta e
       quantity = assets[asset]["quantity"]
 
       percent = (price - 2) * 5
-    ``` 
+   ``` 
+
 5. **Import requests**: es probable que se requiera el módulo requests `pip install requests`
 
 ### Ejecución del Script
